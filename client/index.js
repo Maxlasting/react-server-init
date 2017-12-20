@@ -1,25 +1,37 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './views/App';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { BrowserRouter } from 'react-router-dom'
+import { Provider } from 'mobx-react'
+import App from './views/App'
 
-import { AppContainer } from 'react-hot-loader';  // eslint-disable-line
+import { AppContainer } from 'react-hot-loader' // eslint-disable-line
 
-const root = document.getElementById('root');
+import AppState from './stores/app-store'
+
+const initState = window.__INIT_STATE__ || {} // eslint-disable-line
+
+const root = document.getElementById('root')
 
 const render = (component) => {
-  const node = (
+  const Node = (
     <AppContainer>
-      { component }
+      <Provider appState={new AppState(initState.appState)}>
+        <BrowserRouter>
+          { component }
+        </BrowserRouter>
+      </Provider>
     </AppContainer>
-  );
-  ReactDOM.hydrate(node, root);
-};
+  )
+  ReactDOM.hydrate(Node, root)
+}
 
-render(<App />);
+render(<App />)
 
+/* eslint-disable */
 if (module.hot) {
   module.hot.accept('./views/App', () => {
-    const Next = require('./views/App').default;  // eslint-disable-line
-    render(<Next />);
+    const Next = require('./views/App').default
+    render(<Next />)
   })
 }
+/* eslint-enable */
